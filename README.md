@@ -73,3 +73,17 @@ I leveraged its caching feature to avoid repeatedly calling the API endpoint to 
 - Security:
   - Next.js middleware is used to protect against unauthorized access.
   - Each API endpoint validates the session by checking the cookie.
+
+### Deployment
+
+- Deployed to AWS.
+- When new commits are pushed to the `main` branch, it starts the `AWS CodePipeline` to build and register a new Docker image to `AWS ECR`.
+- After the `AWS CodePipeline` builds and registers a new Docker image, run the following command to update `ECS` service:
+
+  ```bash
+  # Log into AWS CLI.
+  aws sso login --profile AdministratorAccess-xxx
+  # Update ECS service.
+  aws ecs update-service --cluster movie-db --service movie-db --force-new-deployment --region us-east-1 --profile AdministratorAccess-xxx
+
+  ```
