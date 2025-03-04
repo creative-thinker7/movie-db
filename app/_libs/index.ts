@@ -5,7 +5,7 @@ interface CallApiProps {
 }
 
 export async function callApi({ url, method = "GET", body }: CallApiProps) {
-  return fetch(`http://localhost:3000/api${url}`, {
+  return fetch(`/api${url}`, {
     method,
     headers: {
       "Content-Type": "application/json",
