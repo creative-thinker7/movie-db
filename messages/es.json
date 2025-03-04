@@ -1,0 +1,47 @@
+{
+  "SigninPage": {
+    "SIGNIN": "Iniciar sesión",
+    "EMAIL": "Correo electrónico",
+    "PASSWORD": "Contraseña",
+    "REMEMBER_ME": "Recuérdame",
+    "LOGIN": "Acceder",
+    "GENERIC_ERROR": "Error al iniciar sesión.",
+    "INVALID_EMAIL_ERROR": "Por favor, introduce un correo electrónico válido.",
+    "PASSWORD_ERROR": "Por favor, introduce una contraseña.",
+    "WRONG_PASSWORD_ERROR": "Correo electrónico o contraseña incorrectos."
+  },
+  "HomePage": {
+    "EMPTY_LIST": "Tu lista de películas está vacía",
+    "ADD_NEW_MOVIE": "Agregar una nueva película",
+    "MY_MOVIES": "Mis películas",
+    "LOGOUT": "Cerrar sesión"
+  },
+  "CreatePage": {
+    "CREATE_NEW_MOVIE": "Crear una nueva película",
+    "SUCCESS_MESSAGE": "Película creada con éxito.",
+    "GENERIC_ERROR": "Error al crear la película."
+  },
+  "EditPage": {
+    "EDIT": "Editar",
+    "SUCCESS_MESSAGE": "Película actualizada con éxito.",
+    "GENERIC_ERROR": "Error al actualizar la película."
+  },
+  "NotFoundPage": {
+    "MESSAGE": "La página que buscas no existe.",
+    "GO_TO_HOME": "Volver al panel de control"
+  },
+  "Shared": {
+    "PREV": "Anterior",
+    "NEXT": "Siguiente",
+    "DROP_IMAGE": "Suelta una imagen aquí",
+    "LOADING": "Cargando...",
+    "CANCEL": "Cancelar",
+    "SUBMIT": "Enviar",
+    "UPDATE": "Actualizar",
+    "TITLE": "Título",
+    "PUBLISHING_YEAR": "Año de publicación",
+    "IMAGE_ERROR": "Por favor, elige una imagen de póster.",
+    "TITLE_ERROR": "Por favor, introduce un título de película.",
+    "YEAR_ERROR": "Por favor, introduce un año de publicación válido entre 1800 y el año actual."
+  }
+}

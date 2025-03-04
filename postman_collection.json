@@ -1,0 +1,148 @@
+{
+  "info": {
+    "name": "movie-db",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Signin",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"demo@prospectory.ai\",\n    \"password\": \"password\",\n    \"rememberMe\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{API_ENDPOINT}}/signin",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["signin"]
+        },
+        "description": "### Sign In\n\nThis endpoint is used to sign in a user.\n\n#### Request Body\n\n- `email` (string, required): The email address of the user.\n    \n- `password` (string, required): The password of the user.\n    \n- `rememberMe` (boolean, required): Indicates whether the user wants to be remembered after the session ends.\n    \n\n#### Response\n\n- Status: 200 OK\n    \n- Content-Type: application/json\n    \n\nThe response body is empty upon successful sign-in.\n\n- For invalid payloads, returns `400 Bad Request`\n    \n- For invalid credentials, returns `401 Unauthorized`"
+      },
+      "response": []
+    },
+    {
+      "name": "Get movies",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/movies",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["movies"]
+        },
+        "description": "# Get Movies\n\nThis endpoint retrieves a list of movies.\n\n## Request\n\n### Request Body\n\nThis request does not require a request body.\n\n### Request Parameters\n\n- `per_page`: Number. The number of results per page. By default, `8`.\n    \n- `page`: Number. The page for which results are retrieved. By default, `1`.\n    \n\n## Response\n\n### Response Body\n\nThe response will be a JSON object with the following schema:\n\n``` json\n{\n    \"movies\": [\n        {\n            \"id\": \"\",\n            \"title\": \"\",\n            \"year\": 0,\n            \"image\": \"\",\n            \"slug\": \"\"\n        }\n    ],\n    \"total\": 0\n}\n\n ```\n\nThe `movies` array contains objects with the `id`, `title`, `year`, `image`, and `slug` properties. The `total` field indicates the total number of movies available.\n\n- For unauthorized access, returns `401 Unauthorized`"
+      },
+      "response": []
+    },
+    {
+      "name": "Create movie",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "title",
+              "value": "my movie",
+              "type": "text"
+            },
+            {
+              "key": "year",
+              "value": "2020",
+              "type": "text"
+            },
+            {
+              "key": "image",
+              "type": "file",
+              "src": "/home/user/Documents/image.jpg"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{API_ENDPOINT}}/movies",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["movies"]
+        },
+        "description": "### Add Movie\n\nThis endpoint allows the user to add a new movie to the database.\n\n#### Request Body\n\n- `title` (text): The title of the movie.\n    \n- `year` (text): The year of release of the movie.\n    \n- `image` (file): The image file for the movie poster.\n    \n\n#### Response\n\nUpon successful addition, the endpoint returns a status code of 200 with the following JSON response.\n\n``` json\n{\n    \"movie\": {\n        \"id\": \"\",\n        \"title\": \"\",\n        \"year\": 0,\n        \"image\": \"\",\n        \"slug\": \"\"\n    }\n}\n\n ```\n\n- For unauthorized access, returns `401 Unauthorized`\n    \n- For invalid payloads, returns `400 Bad Request`"
+      },
+      "response": []
+    },
+    {
+      "name": "Update movie",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "title",
+              "value": "my movie",
+              "type": "text"
+            },
+            {
+              "key": "year",
+              "value": "2024",
+              "type": "text"
+            },
+            {
+              "key": "image",
+              "type": "file",
+              "src": "/home/user/image.jpg"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{API_ENDPOINT}}/movies/movie-slug",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["movies", "movie-slug"]
+        },
+        "description": "### Update Movie Details\n\nThis endpoint is used to update the details of a specific movie.\n\n#### Request\n\nThe request should be made to `{{API_ENDPOINT}}/movies/movie-slug` using the HTTP PATCH method.\n\n##### Request Body\n\nThe request body should be of type form-data and include the following parameters:\n\n- `title` (text): The updated title of the movie.\n    \n- `year` (text): The updated year of the movie.\n    \n- `image` (file): Optional. The updated image file of the movie.\n    \n\n#### Response\n\nUpon a successful update, the endpoint will return a JSON response with a status code of 200 and the following schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"movie\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"id\": {\n          \"type\": \"string\"\n        },\n        \"title\": {\n          \"type\": \"string\"\n        },\n        \"year\": {\n          \"type\": \"integer\"\n        },\n        \"image\": {\n          \"type\": \"string\"\n        },\n        \"slug\": {\n          \"type\": \"string\"\n        }\n      }\n    }\n  }\n}\n\n ```\n\n- For unauthorized access, returns `401 Unauthorized`\n    \n- For invalid payloads, returns `400 Bad Request`"
+      },
+      "response": []
+    },
+    {
+      "name": "Get image",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/images/image-name",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["images", "image-name"]
+        },
+        "description": "This endpoint makes an HTTP GET request to retrieve the image with the specified filename. The response will contain the image data with a status code of 200 and a Content-Type of images.\n\n- For unauthorized access, returns `401 Unauthorized`\n    \n- For incorrect image names, returns `404 Not Found`"
+      },
+      "response": []
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/logout",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["logout"]
+        },
+        "description": "### Logout\n\nThis endpoint is used to log out the user from the system.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n- Body: An empty JSON object is returned upon successful logout."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "API_ENDPOINT",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "SigninPage": {
+    "SIGNIN": "Sign in",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "REMEMBER_ME": "Remember me",
+    "LOGIN": "Login",
+    "GENERIC_ERROR": "Failed to sign in.",
+    "INVALID_EMAIL_ERROR": "Please enter a valid email.",
+    "PASSWORD_ERROR": "Please enter a password.",
+    "WRONG_PASSWORD_ERROR": "Invalid email or password."
+  },
+  "HomePage": {
+    "EMPTY_LIST": "Your movie list is empty",
+    "ADD_NEW_MOVIE": "Add a new movie",
+    "MY_MOVIES": "My movies",
+    "LOGOUT": "Logout"
+  },
+  "CreatePage": {
+    "CREATE_NEW_MOVIE": "Create a new movie",
+    "SUCCESS_MESSAGE": "Created a movie successfully.",
+    "GENERIC_ERROR": "Failed to create a movie."
+  },
+  "EditPage": {
+    "EDIT": "Edit",
+    "SUCCESS_MESSAGE": "Updated a movie successfully.",
+    "GENERIC_ERROR": "Failed to update a movie."
+  },
+  "NotFoundPage": {
+    "MESSAGE": "The page you are looking for does not exist.",
+    "GO_TO_HOME": "Go back to dashboard"
+  },
+  "Shared": {
+    "PREV": "Prev",
+    "NEXT": "Next",
+    "DROP_IMAGE": "Drop an image here",
+    "LOADING": "Loading...",
+    "CANCEL": "Cancel",
+    "SUBMIT": "Submit",
+    "UPDATE": "Update",
+    "TITLE": "Title",
+    "PUBLISHING_YEAR": "Publishing year",
+    "IMAGE_ERROR": "Please choose a poster image.",
+    "TITLE_ERROR": "Please enter a movie title.",
+    "YEAR_ERROR": "Please enter a valid publishing year between 1800 and the current year."
+  }
+}
