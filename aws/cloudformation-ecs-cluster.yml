@@ -1,0 +1,165 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  ClusterName:
+    Description: The ECS cluster name.
+    Type: String
+    Default: movie-db
+  InstanceType:
+    Type: String
+    Description: EC2 instance type
+    Default: t2.small
+    AllowedValues:
+      - t2.2xlarge
+      - t2.large
+      - t2.medium
+      - t2.small
+      - t2.xlarge
+      - t3.2xlarge
+      - t3.large
+      - t3.medium
+      - t3.micro
+      - t3.nano
+      - t3.small
+      - t3.xlarge
+  DesiredCapacity:
+    Type: Number
+    Default: "0"
+    Description: Number of EC2 instances to launch in your ECS cluster.
+  MaxSize:
+    Type: Number
+    Default: "100"
+    Description: Maximum number of EC2 instances that can be launched in your ECS cluster.
+  ECSAMI:
+    Description: The Amazon Machine Image ID used for the cluster
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC ID where the ECS cluster is launched
+    Default: vpc-0cbbb711b31455a54
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: List of subnet IDs where the EC2 instances will be launched
+    Default: subnet-0a2c7a2224f1c92f7
+Resources:
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref ClusterName
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
+  ContainerInstances:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: asg-launch-template-movie-db
+      LaunchTemplateData:
+        ImageId: !Ref ECSAMI
+        InstanceType: !Ref InstanceType
+        IamInstanceProfile:
+          Name: !Ref EC2InstanceProfile
+        SecurityGroupIds:
+          - !Ref ContainerHostSecurityGroup
+        UserData: !Base64
+          Fn::Sub: |
+            #!/bin/bash -xe
+            echo ECS_CLUSTER=${ECSCluster} >> /etc/ecs/ecs.config
+            yum install -y aws-cfn-bootstrap
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource ContainerInstances --configsets full_install --region ${AWS::Region} &
+        MetadataOptions:
+          HttpEndpoint: enabled
+          HttpTokens: required
+  ECSAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DependsOn:
+      - ECSCluster
+      - EC2Role
+    Properties:
+      VPCZoneIdentifier: !Ref SubnetIds
+      LaunchTemplate:
+        LaunchTemplateId: !Ref ContainerInstances
+        Version: !GetAtt ContainerInstances.LatestVersionNumber
+      MinSize: 0
+      MaxSize: !Ref MaxSize
+      DesiredCapacity: !Ref DesiredCapacity
+      NewInstancesProtectedFromScaleIn: true
+    UpdatePolicy:
+      AutoScalingReplacingUpdate:
+        WillReplace: "true"
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+        - !Ref EC2Role
+  CapacityProvider:
+    Type: AWS::ECS::CapacityProvider
+    Properties:
+      AutoScalingGroupProvider:
+        AutoScalingGroupArn: !Ref ECSAutoScalingGroup
+        ManagedScaling:
+          InstanceWarmupPeriod: 60
+          MinimumScalingStepSize: 1
+          MaximumScalingStepSize: 100
+          Status: ENABLED
+          TargetCapacity: 100
+        ManagedTerminationProtection: ENABLED
+  CapacityProviderAssociation:
+    Type: AWS::ECS::ClusterCapacityProviderAssociations
+    Properties:
+      CapacityProviders:
+        - !Ref CapacityProvider
+      Cluster: !Ref ECSCluster
+      DefaultCapacityProviderStrategy:
+        - Base: 0
+          CapacityProvider: !Ref CapacityProvider
+          Weight: 1
+  ContainerHostSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Access to the EC2 hosts that run containers
+      VpcId: !Ref VpcId
+  EC2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+  ECSTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ecs-tasks.amazonaws.com
+            Action:
+              - sts:AssumeRole
+            Condition:
+              ArnLike:
+                aws:SourceArn: !Sub arn:${AWS::Partition}:ecs:${AWS::Region}:${AWS::AccountId}:*
+              StringEquals:
+                aws:SourceAccount: !Sub ${AWS::AccountId}
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+Outputs:
+  ClusterName:
+    Description: The ECS cluster into which to launch resources
+    Value: !Ref ECSCluster
+  ECSTaskExecutionRole:
+    Description: The role used to start up a task
+    Value: !Ref ECSTaskExecutionRole
+  CapacityProvider:
+    Description: The cluster capacity provider that the service should use to request capacity when it wants to start up a task
+    Value: !Ref CapacityProvider

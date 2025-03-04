@@ -1,4 +1,4 @@
-FROM node:20 AS base
+FROM public.ecr.aws/docker/library/node:20 AS base
 
 FROM base AS deps
 WORKDIR /app
